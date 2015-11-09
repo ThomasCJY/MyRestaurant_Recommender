@@ -6,13 +6,20 @@
 * http://www.zillow.com/howto/api/APIOverview.htm
 * www.mapbox.com
 
+## Building the DB
+To build the database, extract the yelp dataset somewhere and run:
+
+`python json_to_sqlite3.py "path_to_yelp_dir"`
+
 ## REST API
 ### `/metro_areas`
 
 Returns a list of all metro area names in database:
-> {'metro_areas': [metro area names]}
+
+ `{'metro_areas': [metro area names]}`
   
 ### `/scores/<metro_area_name>`
 
 Returns the top ten scores in the given metro area:
-> {'scores': [{'category': ..., 'score': ..., 'zip_code': ...}]}
+
+`{'scores': [{'category': ..., 'score': ..., 'zip_code': ...}]}`
