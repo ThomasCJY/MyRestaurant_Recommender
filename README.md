@@ -7,9 +7,9 @@
 * www.mapbox.com
 
 ## Building the DB
-To build the database, extract the yelp dataset somewhere and run:
-
-`python json_to_sqlite3.py "path_to_yelp_dir"`
+1. Extract the yelp dataset somewhere
+2. Create your dataset_dirs.py file (see dataset_dirs_example.py)
+3. Run json_to_sqlite3.py
 
 ## REST API
 ### `/metro_areas`
