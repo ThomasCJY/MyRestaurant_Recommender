@@ -35,3 +35,9 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Custom #
+######################
+dataset_dirs.py
+*.swp
+flask.db

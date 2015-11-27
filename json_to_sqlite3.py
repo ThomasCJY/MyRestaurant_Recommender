@@ -4,9 +4,10 @@ import json
 import sqlite3
 from random import randint
 import constants
+import dataset_dirs
 
-def import_yelp_data(YELP_DIR):
-	BUSINESS_JSON_FILE = "%syelp_academic_dataset_business.json" % YELP_DIR
+def import_yelp_data():
+	BUSINESS_JSON_FILE = "%syelp_academic_dataset_business.json" % dataset_dirs.YELP_DATASET_DIR
 	
 	if not os.path.exists(BUSINESS_JSON_FILE):
 		print "Couldn't find json file \"%s\"" % BUSINESS_JSON_FILE
@@ -206,7 +207,4 @@ def _get_unique_values(c, table, field):
 		    (field, table)).fetchall()]
 
 if __name__ == "__main__":
-	if len(sys.argv) != 2:
-		print "Expected 1 arg, received:\n%s" % sys.argv[1:]
-	else:
-		import_yelp_data(sys.argv[1])
+	import_yelp_data()
