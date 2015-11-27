@@ -9,7 +9,7 @@
 ## Building the DB
 1. Extract the yelp dataset somewhere
 2. Create your dataset_dirs.py file (see dataset_dirs_example.py)
-3. Run json_to_sqlite3.py
+3. Run parse_yelp_business_data.py
 
 ## REST API
 ### `/metro_areas`
