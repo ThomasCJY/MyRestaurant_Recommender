@@ -21,17 +21,6 @@ Returns a list of all metro area names in database:
 ### `/scores/<metro_area_name>`
 
 Returns the top ten scores in the given metro area:
-{
-  "scores": [
-    {
-      "category": "Food Delivery Services", 
-      "score": 100, 
-      "zip_code": "15120"
-    },
-    ...
-    ]
-}
-
 
 `{'scores': [{'category': ..., 'score': ..., 'zip_code': ...}]}`
 
@@ -39,18 +28,4 @@ Returns the top ten scores in the given metro area:
 
 Return the top 3 areas for the customer's choice.
 
-{
-  "areas": [
-    {
-      "zip_code": "30134"
-    },
-    {
-      "zip_code": "30303"
-    },
-    {
-      "zip_code": "30241"
-    },
-    ]
-}
-
-{'areas': [{'zip_code': ...}]}
+`{'areas': [{'zip_code': ...}]}`
