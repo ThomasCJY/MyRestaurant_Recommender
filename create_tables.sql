@@ -49,8 +49,8 @@ CREATE TABLE restaurants_hours(
 );
 
 CREATE TABLE restaurant_categories(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT UNIQUE NOT NULL
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE restaurants_categories(
@@ -79,8 +79,8 @@ CREATE TABLE restaurants_attributes(
 	has INTEGER NOT NULL
 );
 
-CREATE TABLE restaurants_scores (
-	restaurant_category_id INTEGER REFERENCES restaurant_categories(id),
+CREATE TABLE restaurants_scores(
+	restaurant_category_id INTEGER NOT NULL REFERENCES restaurant_categories(id),
 	zip_code TEXT NOT NULL,
 	state_id INTEGER NOT NULL,
 	metro_id INTEGER NOT NULL,
@@ -88,4 +88,18 @@ CREATE TABLE restaurants_scores (
 	PRIMARY KEY(restaurant_category_id, zip_code, metro_id),
 	FOREIGN KEY(zip_code, state_id, metro_id) REFERENCES
 	zip_codes(zip_code, state_id, metro_id)
+);
+
+CREATE TABLE price_levels(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE zip_codes_income_levels(
+	state_id INTEGER NOT NULL,
+	zip_code TEXT NOT NULL,
+	level INTEGER NOT NULL REFERENCES price_levels(id),
+	percentage REAL NOT NULL,
+	PRIMARY KEY(state_id, zip_code, level),
+	FOREIGN KEY(zip_code, state_id) REFERENCES zip_codes(zip_code, state_id)
 );

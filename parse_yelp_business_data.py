@@ -1,10 +1,10 @@
 import os
-import sys
 import json
 import sqlite3
 from random import randint
 import constants
 import dataset_dirs
+import dao
 
 def import_yelp_data():
 	BUSINESS_JSON_FILE = "%syelp_academic_dataset_business.json" % dataset_dirs.YELP_DATASET_DIR
@@ -102,7 +102,7 @@ def import_yelp_data():
 			r['name'],
 			r['longitude'],
 			r['latitude'],
-			_get_id_of_name(c, 'states', r['state']),
+			get_id_of_name(c, 'states', r['state']),
 			r['stars'],
 		]
 		c.execute(
@@ -113,7 +113,7 @@ def import_yelp_data():
 
 		## restaurants_hours
 		for day in r['hours']:
-			day_id = _get_id_of_name(c, 'weekdays', day)
+			day_id = get_id_of_name(c, 'weekdays', day)
 			if day_id is None:
 				print ("ERROR: Couldn't find day \"%s\" for restaurant %s" %
 					   (day, restaurant_id))
@@ -126,7 +126,7 @@ def import_yelp_data():
 
 		for category in [cat for cat in r['categories']
 						 if cat != 'Restaurants']:
-			category_id = _get_id_of_name(c, 'restaurant_categories', category)
+			category_id = get_id_of_name(c, 'restaurant_categories', category)
 			if category_id is None:
 				print ("ERROR: Couldn't find category %s for restaurant %s" %
 					   (category, restaurant_id))
@@ -139,7 +139,7 @@ def import_yelp_data():
 
 		for neighborhood in r['neighborhoods']:
 			# restaurant_neighborhoods
-			neighborhood_id = _get_id_of_name(c, 'restaurant_neighborhoods',
+			neighborhood_id = get_id_of_name(c, 'restaurant_neighborhoods',
 										      neighborhood)
 			if neighborhood_id is None:
 				print ("ERROR: Failed to insert neighborhood \"%s\" of " +
@@ -155,7 +155,7 @@ def import_yelp_data():
 
 		# restaurant_attributes
 		for attribute in r['attributes']:
-			attribute_id = _get_id_of_name(c, 'restaurant_attributes', attribute)
+			attribute_id = get_id_of_name(c, 'restaurant_attributes', attribute)
 			if attribute_id is None:
 				print ("ERROR: Failed to insert attribute \"%s\" of " +
 					   "restaurant \"%s\"" % (attribute, restaurant_id))
@@ -169,7 +169,7 @@ def import_yelp_data():
 
 	### DUMMY PART 2
 	# restaurants_scores
-	category_ids = _get_unique_values(c, 'restaurant_categories', 'id')
+	category_ids = get_unique_values(c, 'restaurant_categories', 'id')
 	scores_by_zip_metro = []
 	for zip_code, state_id, metro_id in zip_codes_metro_areas_entries:
 		for category_id in category_ids:
@@ -188,23 +188,11 @@ def import_yelp_data():
 	conn.commit()
 	c.close()
 
-def _get_id_of_name(c, table, name, id_field='id', name_field='name'):
-	results = c.execute('SELECT %s from %s WHERE %s=?' %
-					    (id_field, table, name_field), [name]).fetchall()
+def get_id_of_name(c, table, name, id_field='id', name_field='name'):
+	return dao.get_id_of_name(c, table, name, id_field=id_field, name_field=name_field)
 
-	if len(results) != 1 or len(results[0]) != 1:
-		c.execute('INSERT INTO %s (%s) VALUES (?)' % (table, name_field),
-				  [name])
-		results = c.execute('SELECT %s from %s WHERE %s=?' %
-						    (id_field, table, name_field), [name]).fetchall()
-		if len(results) != 1 or len(results[0]) != 1:
-			return None
-
-	return results[0][0]
-
-def _get_unique_values(c, table, field):
-	return [x[0] for x in c.execute('SELECT DISTINCT %s FROM %s' %
-		    (field, table)).fetchall()]
+def get_unique_values(c, table, field):
+	return dao.get_unique_values(c, table, field)
 
 if __name__ == "__main__":
 	import_yelp_data()

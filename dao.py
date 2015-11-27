@@ -39,6 +39,17 @@ def get_unique_values(c, table, field):
 	).fetchall()
 	return [x[0] for x in query_res]
 
+# If the given combo of zip_code and state_id doesn't exist, store it.
+def check_add_zip_code(c, zip_code, state_id):
+	results = c.execute(
+		'SELECT zip_code from zip_codes WHERE zip_code=? and state_id=?',
+		[zip_code, state_id]
+	).fetchall()
+
+	if len(results) != 1 or len(results[0]) != 1:
+		c.execute('INSERT INTO zip_codes (zip_code, state_id) VALUES (?, ?)',
+				  [zip_code, state_id])
+
 def get_id_of_name(c, table, name, id_field='id', name_field='name'):
 	results = c.execute('SELECT %s from %s WHERE %s=?' %
 					    (id_field, table, name_field), [name]).fetchall()
@@ -52,3 +63,9 @@ def get_id_of_name(c, table, name, id_field='id', name_field='name'):
 			return None
 
 	return results[0][0]
+
+def get_level_ids(c):
+    level_ids = []
+    for level in ['low', 'mid', 'high']:
+        level_ids.append(get_id_of_name(c, 'price_levels', level))
+    return level_ids
