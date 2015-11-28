@@ -11,14 +11,14 @@ CREATE TABLE metro_areas (
 
 -- Composite key since same zip-code could exist in different countries
 CREATE TABLE zip_codes (
-		zip_code TEXT NOT NULL,
+		zip_code INTEGER NOT NULL,
 		state_id INTEGER NOT NULL REFERENCES states(id),
 		PRIMARY KEY(zip_code, state_id)
 );
 
 CREATE TABLE metro_areas_zip_codes(
 	metro_id INTEGER REFERENCES metro_areas(id),
-	zip_code TEXT NOT NULL,
+	zip_code INTEGER NOT NULL,
 	state_id INTEGER NOT NULL,
 	PRIMARY KEY(metro_id, zip_code),
 	FOREIGN KEY(zip_code, state_id) REFERENCES zip_codes(zip_code, state_id)
@@ -32,8 +32,10 @@ CREATE TABLE restaurants (
 	name TEXT NOT NULL,
 	longitude REAL,
 	latitude REAL,
-	state_id TEXT NOT NULL REFERENCES states(id),
-	stars REAL
+	zip_code INTEGER NOT NULL,
+	state_id TEXT NOT NULL,
+	stars REAL,
+	FOREIGN KEY (zip_code, state_id) REFERENCES zip_codes(zip_code, state_id)
 );
 
 CREATE TABLE weekdays(
@@ -81,7 +83,7 @@ CREATE TABLE restaurants_attributes(
 
 CREATE TABLE restaurants_scores(
 	restaurant_category_id INTEGER NOT NULL REFERENCES restaurant_categories(id),
-	zip_code TEXT NOT NULL,
+	zip_code INTEGER NOT NULL,
 	state_id INTEGER NOT NULL,
 	metro_id INTEGER NOT NULL,
 	score INTEGER NOT NULL,
@@ -97,7 +99,7 @@ CREATE TABLE price_levels(
 
 CREATE TABLE zip_codes_income_levels(
 	state_id INTEGER NOT NULL,
-	zip_code TEXT NOT NULL,
+	zip_code INTEGER NOT NULL,
 	level INTEGER NOT NULL REFERENCES price_levels(id),
 	percentage REAL NOT NULL,
 	PRIMARY KEY(state_id, zip_code, level),
@@ -106,7 +108,7 @@ CREATE TABLE zip_codes_income_levels(
 
 CREATE TABLE zip_codes_population(
 	state_id INTEGER NOT NULL,
-	zip_code TEXT NOT NULL,
+	zip_code INTEGER NOT NULL,
 	population INTEGER NOT NULL,
 	PRIMARY KEY(state_id, zip_code, population),
 	FOREIGN KEY(zip_code, state_id) REFERENCES zip_codes(zip_code, state_id)

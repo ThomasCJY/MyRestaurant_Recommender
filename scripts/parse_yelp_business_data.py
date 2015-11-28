@@ -17,10 +17,6 @@ def import_yelp_data():
 	entries = [json.loads(line) for line in lines]
 	restaurants = [entry for entry in entries if 'Restaurants' in entry['categories']]
 	f.close()
-
-	# TODO will "open" ever be false? seems to be true always. But if it just
-	# changes over time we don't care about this field.
-
 	conn = sqlite3.connect(const.DB_FILENAME)
 	c = conn.cursor()
 
@@ -38,10 +34,23 @@ def import_yelp_data():
 	# HACK: just one metro per state in this dataset, hard-coding
 	metro_areas_by_state = {
 		'NV': 'Las Vegas', 'AZ': 'Phoenix', 'WI': 'Madison',
-		'IL': 'Urbana-Champaign', 'NC': 'Charlotte', 'PA': 'Pittsburgh',
-		'QC': 'Montreal', 'ON': 'Waterloo', 'BW': 'Karlsruhe',
-		'EDH': 'Edinburgh'
+		'IL': 'Urbana-Champaign', 'NC': 'Charlotte', 'PA': 'Pittsburgh'
 	}
+	# metro_areas_by_state = {
+	# 	'NV': 'Las Vegas', 'AZ': 'Phoenix', 'WI': 'Madison',
+	# 	'IL': 'Urbana-Champaign', 'NC': 'Charlotte', 'PA': 'Pittsburgh',
+	# 	'QC': 'Montreal', 'ON': 'Waterloo', 'BW': 'Karlsruhe',
+	# 	'EDH': 'Edinburgh'
+	# }
+
+	# There's very few restaurants that don't list their zip code, and something around
+	# half are food trucks and thus don't have one set location. We disregard these
+	# since there are only about 30 out of tens of thousands of restaurants in the dataset.
+	restaurants = [r for r in restaurants if r['state'] in metro_areas_by_state.keys()
+			       if len(r['full_address'])>=5 and r['full_address'][-5:].isdigit()]
+
+	for r in restaurants:
+		r['zip_code'] = int(r['full_address'][-5:])
 
 	# states
 	c.executemany('INSERT INTO states (name) VALUES (?)',
@@ -65,10 +74,8 @@ def import_yelp_data():
 		# other characters in their zip codes, including spaces. Some restaurants
 		# haven't listed their zip at all, just state...
 		# As it is below we don't store any zip codes for Canada/Germany!
-		zip_codes = [x['full_address'][-5:] for x in restaurants
-				     if len(x['full_address']) >= 5
-				     and x['state'] == state
-				     and x['full_address'][-5:].isdigit()]
+		zip_codes = [r['zip_code'] for r in restaurants
+				     if r['state'] == state]
 		for zip_code in set(zip_codes):
 			zip_codes_entries.append((zip_code, state_id))
 			# (HACK)
@@ -89,6 +96,12 @@ def import_yelp_data():
 		restaurant_id = r['business_id']
 
 		## restaurants
+
+		# We disregard the 'open' field since it seems to be just a way for yelp to find
+		# restaurants that are open at the current time and thus serve that info to users.
+		# They would just update it in the database whenever a restaurant opens or closes,
+		# to amortize the cost of looking this up when users search for restaurants 'Open Now'.
+
 		data = [
 			restaurant_id,
 			r['full_address'],
@@ -97,13 +110,14 @@ def import_yelp_data():
 			r['name'],
 			r['longitude'],
 			r['latitude'],
+			r['zip_code'],
 			get_id_of_name(c, 'states', r['state']),
 			r['stars'],
 		]
 		c.execute(
 			'INSERT INTO restaurants (id, full_address, city, review_count, ' +
-			'name, longitude, latitude, state_id, stars) VALUES ' +
-			'(?, ?, ?, ?, ?, ?, ?, ?, ?)', data
+			'name, longitude, latitude, zip_code, state_id, stars) VALUES ' +
+			'(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', data
 		)
 
 		## restaurants_hours
