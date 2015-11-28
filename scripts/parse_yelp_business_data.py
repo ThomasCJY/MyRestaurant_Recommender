@@ -2,15 +2,15 @@ import os
 import json
 import sqlite3
 from random import randint
-import constants
+import lib.constants as const
 import dataset_dirs
-import dao
+import lib.dao as dao
 
 def import_yelp_data():
 	BUSINESS_JSON_FILE = "%syelp_academic_dataset_business.json" % dataset_dirs.YELP_DATASET_DIR
 	
 	if not os.path.exists(BUSINESS_JSON_FILE):
-		print "Couldn't find json file \"%s\"" % BUSINESS_JSON_FILE
+		print "Parse Yelp business data: Couldn't find json file \"%s\"" % BUSINESS_JSON_FILE
 		return
 	f = open(BUSINESS_JSON_FILE)	
 	lines = f.read().split('\n')[:-1]
@@ -21,13 +21,8 @@ def import_yelp_data():
 	# TODO will "open" ever be false? seems to be true always. But if it just
 	# changes over time we don't care about this field.
 
-	conn = sqlite3.connect(constants.DB_FILENAME)
+	conn = sqlite3.connect(const.DB_FILENAME)
 	c = conn.cursor()
-
-	# Create tables
-	create_tables_script = open('create_tables.sql')
-	c.executescript(create_tables_script.read())
-	create_tables_script.close()
 
 	## weekdays
 	for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday',

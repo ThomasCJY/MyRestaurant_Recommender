@@ -1,11 +1,15 @@
 import csv     # imports the csv module
+import os
 import dataset_dirs
-import dao
+import lib.dao as dao
 import sqlite3
-import constants
+import lib.constants as const
 
 def import_income_by_zip():
     filename = dataset_dirs.ZIP_INCOME_DIR + "13zpallagi.csv"
+    if not os.path.exists(filename):
+        print "Parse income by zip: Couldn't find file \"%s\"" % filename
+        return
     f = open(filename, 'rb') # opens the csv file
     header = None
     rows = []
@@ -23,7 +27,7 @@ def import_income_by_zip():
     finally:
         f.close()      # closing
 
-    conn = sqlite3.connect(constants.DB_FILENAME)
+    conn = sqlite3.connect(const.DB_FILENAME)
     c = conn.cursor()
 
     if len_mismatches:
@@ -48,8 +52,10 @@ def import_income_by_zip():
             counts[key][level] = count
 
     values = []
-    for key in counts:
+    total_population_values = []
+    for i, key in enumerate(counts):
         total_count = sum([counts[key][level] for level in counts[key]])
+        total_population_values.append([key[0], key[1], total_count])
         for level in counts[key]:
             percentage = 0.0 if total_count == 0 else (100*counts[key][level] / float(total_count))
             values.append([key[0], key[1], level, percentage])
@@ -57,6 +63,11 @@ def import_income_by_zip():
     c.executemany(
         'INSERT INTO zip_codes_income_levels (state_id, zip_code, ' +
         'level, percentage) VALUES (?,?,?,?)', values
+    )
+
+    c.executemany(
+        'INSERT INTO zip_codes_population (state_id, zip_code, ' +
+        'population) VALUES (?,?,?)', total_population_values
     )
 
     conn.commit()

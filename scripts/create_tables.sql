@@ -103,3 +103,11 @@ CREATE TABLE zip_codes_income_levels(
 	PRIMARY KEY(state_id, zip_code, level),
 	FOREIGN KEY(zip_code, state_id) REFERENCES zip_codes(zip_code, state_id)
 );
+
+CREATE TABLE zip_codes_population(
+	state_id INTEGER NOT NULL,
+	zip_code TEXT NOT NULL,
+	population INTEGER NOT NULL,
+	PRIMARY KEY(state_id, zip_code, population),
+	FOREIGN KEY(zip_code, state_id) REFERENCES zip_codes(zip_code, state_id)
+);
