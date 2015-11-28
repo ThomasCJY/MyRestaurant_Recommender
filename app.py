@@ -15,13 +15,16 @@ def get_db():
 
 app = Flask(__name__)
 
-
 @app.route('/form_action', methods=['POST'])
 def form_action():
 	name = request.form['name']
 	email = request.form['email']
 	msg = request.form['msg']
-	return render_template('form_action.html', name=name, email=email)
+	if 'skill_level' in request.args:
+		response = "skill level: %s" % request.args['skill_level']
+	else:
+		response = "Hello, peasant. No 'skill_level' arg found."
+	return render_template('form_action.html', name=name, email=email, response=response)
 
 @app.route('/wp-admin')
 def wpadmin():
