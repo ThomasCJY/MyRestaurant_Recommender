@@ -5,6 +5,7 @@ import sqlite3
 import dao
 import constants
 from flask import g
+from flask import request
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -13,6 +14,18 @@ def get_db():
     return db
 
 app = Flask(__name__)
+
+
+@app.route('/form_action', methods=['POST'])
+def form_action():
+	name = request.form['name']
+	email = request.form['email']
+	msg = request.form['msg']
+	return render_template('form_action.html', name=name, email=email)
+
+@app.route('/wp-admin')
+def wpadmin():
+	return render_template('no.html')
 
 @app.route('/')
 def start_page():
