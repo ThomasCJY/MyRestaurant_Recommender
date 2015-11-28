@@ -1,11 +1,14 @@
 from flask import Flask
 from flask import jsonify
 from flask import render_template
-import sqlite3
-import dao
-import constants
 from flask import g
 from flask import request
+
+import json
+import sqlite3
+
+import lib.constants as constants
+import lib.dao as dao
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -20,11 +23,10 @@ def form_action():
 	name = request.form['name']
 	email = request.form['email']
 	msg = request.form['msg']
-	if 'skill_level' in request.args:
-		response = "skill level: %s" % request.args['skill_level']
-	else:
-		response = "Hello, peasant. No 'skill_level' arg found."
-	return render_template('form_action.html', name=name, email=email, response=response)
+	team_members = {'members': ['Jiayu', 'Chiyao', 'Dong', 'Hao', 'Gustav']}
+	json_response = json.dumps(team_members)
+	return render_template('form_action.html', name=name, email=email,
+						   json_response=json_response)
 
 @app.route('/wp-admin')
 def wpadmin():

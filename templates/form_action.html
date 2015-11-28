@@ -14,6 +14,19 @@
                 <p>Hello <strong>{{name}}</strong> ({{email}})!</p>
                 <p>{{response}}</p>
             </div>
+            <script type="text/javascript">
+                var members_json = JSON.parse({{json_response|tojson}});
+                var members = members_json['members'];
+                var listContainer = document.createElement("div");
+                document.getElementsByTagName("body")[0].appendChild(listContainer);
+                var listElement = document.createElement("ul");
+                listContainer.appendChild(listElement);
+                members.forEach(function(d){
+                    var listItem = document.createElement("li");
+                    listItem.innerHTML = d;
+                    listElement.appendChild(listItem);
+                });
+            </script>
             <div class="title">
         </div>
     </body>
