@@ -2,39 +2,22 @@ import csv     # imports the csv module
 import os
 import dataset_dirs
 import lib.dao as dao
+import lib.util as util
 import sqlite3
 import lib.constants as const
 
 def import_income_by_zip():
     filename = dataset_dirs.ZIP_INCOME_DIR + "13zpallagi.csv"
-    if not os.path.exists(filename):
-        print "Parse income by zip: Couldn't find file \"%s\"" % filename
+    rows = util.csv_to_dict_list(filename)
+    if rows is None:
+        # Something went wrong
         return
-    f = open(filename, 'rb') # opens the csv file
-    header = None
-    rows = []
-    len_mismatches = 0
-    try:
-        reader = csv.reader(f)  # creates the reader object
-        header = reader.next()
-        for row_list in reader:   # iterates the rows of the file in orders
-            row = {}
-            if len(header) != len(row_list):
-                len_mismatches += 1
-            for i in xrange(len(header)):
-                row[header[i]] = row_list[i]
-            rows.append(row)
-    finally:
-        f.close()      # closing
 
     conn = sqlite3.connect(const.DB_FILENAME)
     c = conn.cursor()
 
-    if len_mismatches:
-        print "There were %d cases where the #fields didn't match with the header!" % len_mismatches
-
     counts = {}
-    level_mappings = get_level_mappings(c)
+    level_mappings = util.get_level_mappings(c)
     for row in rows:
         state = row['STATE']
         state_id = dao.get_id_of_name(c, 'states', state)
@@ -72,10 +55,6 @@ def import_income_by_zip():
 
     conn.commit()
     c.close()
-
-def get_level_mappings(c):
-    low, mid, high = dao.get_level_ids(c)
-    return {1: low, 2: low, 3: mid, 4: mid, 5: high, 6: high}
 
 if __name__ == "__main__":
     import_income_by_zip()
