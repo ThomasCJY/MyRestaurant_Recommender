@@ -3,17 +3,18 @@ from flask import jsonify
 from flask import render_template
 from flask import g
 from flask import request
+from flask import abort
 
 import json
 import sqlite3
 
-import lib.constants as constants
+import lib.constants as const
 import lib.dao as dao
 
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-    	db = g._database = sqlite3.connect(constants.DB_FILENAME)
+    	db = g._database = sqlite3.connect(const.DB_FILENAME)
     return db
 
 app = Flask(__name__)
@@ -38,24 +39,86 @@ def start_page():
 
 @app.route('/metro_areas')
 def metro_areas():
-	c = get_db().cursor()
-	unique_values = dao.get_unique_values(c, 'metro_areas', 'name')
-	result = {'metro_areas': unique_values}
-	response = jsonify(result)
-	response.status_code = 200
+	try:
+		c = get_db().cursor()
+		try:
+			unique_values = dao.get_unique_values(c, 'metro_areas', 'name')
+			result = {'metro_areas': unique_values}
+			response = jsonify(result)
+			response.status_code = 200
+			return response
+		finally:
+			c.close()
+	except Exception as e:
+		print e
+		abort(500)
+
+@app.route('/scores/top_zip_codes/<metro_area>/<category>')
+def top_zip_codes(metro_area, category):
+	try:
+		c = get_db().cursor()
+		try:
+			category_id = dao.get_id_of_name(c, 'restaurant_categories', category,
+											 add_nonexisting=False)
+			metro_id = dao.get_id_of_name(c, 'metro_areas', metro_area,
+										  add_nonexisting=False)
+			if category_id is None:
+				print "Category \"%s\" not found in DB!" % category
+				abort(500)
+			if metro_id is None:
+				print "Metro area \"%s\" not found in DB!" % metro_area
+				abort(500)
+
+			fields = ['zip_code', 'score']
+			constraints = {'metro_id': metro_id, 'restaurant_category_id': category_id}
+			top3 = [{'zip_code': t[0], 'score': t[1]} for t in
+					 dao.get_top_scoring(c, fields=fields, constraints=constraints,
+					 			         count=3)]
+			for t in top3:
+				restaurants = [
+					{field: r[i] for i, field in enumerate(const.RESTAURANTS_FIELDS)}
+					for r in dao.list_restaurants_in_zip(c, t['zip_code'])
+				]
+
+				# Add other variables of interest
+				# for r in restaurants:
+					# TODO
+
+				t['restaurants'] = restaurants
+
+			result = {
+				'metro_area': metro_area,
+				'category': category,
+				'top3': top3
+			}
+			response = jsonify(result)
+			response.status_code = 200
+			return response
+		finally:
+			c.close()
+	except Exception as e:
+		print e
+		abort(500)
 	return response
 
 @app.route('/scores/<metro_name>')
-def score_by_zip_code(metro_name):
+def top10(metro_name):
 	# return 'Request for scores in metro %s' % metro_name
 	try:
 		c = get_db().cursor()
-		result = {'scores': dao.get_n_top_scores(c, metro_name)}
-		response = jsonify(result)
-		response.status_code = 200
+		try:
+			result_list = dao.get_top_scores_in_metro(c, metro_name, count=10)
+			if result_list is None:
+				abort(404)
+			result_dict = {'metro_area': metro_name, 'top_scores': result_list}
+			response = jsonify(result_dict)
+			response.status_code = 200
+			return response
+		finally:
+			c.close()
 	except Exception as e:
 		print e
-	return response
+		abort(500)
 
 @app.teardown_appcontext
 def close_connection(exception):

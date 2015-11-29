@@ -29,24 +29,10 @@ def import_yelp_data():
 	restaurant_categories = ([category for x in restaurants
 							  for category in x['categories']])
 
-
-	### DUMMY PART!!
-	# HACK: just one metro per state in this dataset, hard-coding
-	metro_areas_by_state = {
-		'NV': 'Las Vegas', 'AZ': 'Phoenix', 'WI': 'Madison',
-		'IL': 'Urbana-Champaign', 'NC': 'Charlotte', 'PA': 'Pittsburgh'
-	}
-	# metro_areas_by_state = {
-	# 	'NV': 'Las Vegas', 'AZ': 'Phoenix', 'WI': 'Madison',
-	# 	'IL': 'Urbana-Champaign', 'NC': 'Charlotte', 'PA': 'Pittsburgh',
-	# 	'QC': 'Montreal', 'ON': 'Waterloo', 'BW': 'Karlsruhe',
-	# 	'EDH': 'Edinburgh'
-	# }
-
 	# There's very few restaurants that don't list their zip code, and something around
 	# half are food trucks and thus don't have one set location. We disregard these
 	# since there are only about 30 out of tens of thousands of restaurants in the dataset.
-	restaurants = [r for r in restaurants if r['state'] in metro_areas_by_state.keys()
+	restaurants = [r for r in restaurants if r['state'] in const.metro_areas_by_state.keys()
 			       if len(r['full_address'])>=5 and r['full_address'][-5:].isdigit()]
 
 	for r in restaurants:
@@ -54,19 +40,17 @@ def import_yelp_data():
 
 	# states
 	c.executemany('INSERT INTO states (name) VALUES (?)',
-			      [[x] for x in metro_areas_by_state.keys()])
+			      [[x] for x in const.metro_areas_by_state.keys()])
 	state_entries = c.execute('SELECT id, name FROM states').fetchall()
 	states_ids = {x[1]: x[0] for x in state_entries}
 
 	# metro_areas
 	c.executemany('INSERT INTO metro_areas (name, state_id) VALUES (?,?)',
-			      [(metro_areas_by_state[state], states_ids[state])
-			       for state in metro_areas_by_state])
+			      [(const.metro_areas_by_state[state], states_ids[state])
+			       for state in const.metro_areas_by_state])
 
 	# zip_codes_metro_areas
 	zip_codes_entries = []
-	zip_codes_metro_areas_entries = []
-	# (HACK)
 	metro_names_to_id = {x[1]: x[0] for x in
 						 c.execute('SELECT id, name FROM metro_areas').fetchall()}
 	for state_id, state in state_entries:
@@ -77,20 +61,14 @@ def import_yelp_data():
 		zip_codes = [r['zip_code'] for r in restaurants
 				     if r['state'] == state]
 		for zip_code in set(zip_codes):
-			zip_codes_entries.append((zip_code, state_id))
-			# (HACK)
-			zip_codes_metro_areas_entries.append((
+			zip_codes_entries.append((
 				zip_code, state_id,
-				metro_names_to_id[metro_areas_by_state[state]]
+				# (HACK)
+				metro_names_to_id[const.metro_areas_by_state[state]]
 			))
 
-	c.executemany('INSERT INTO zip_codes (zip_code, state_id) VALUES (?,?)',
+	c.executemany('INSERT INTO zip_codes (zip_code, state_id, metro_id) VALUES (?,?,?)',
 				  zip_codes_entries)
-
-	c.executemany('INSERT INTO metro_areas_zip_codes(zip_code, state_id, ' +
-				  'metro_id) VALUES (?,?,?)', zip_codes_metro_areas_entries)
-
-	### END OF DUMMY PART
 
 	for r in restaurants:
 		restaurant_id = r['business_id']
@@ -111,13 +89,12 @@ def import_yelp_data():
 			r['longitude'],
 			r['latitude'],
 			r['zip_code'],
-			get_id_of_name(c, 'states', r['state']),
 			r['stars'],
 		]
 		c.execute(
 			'INSERT INTO restaurants (id, full_address, city, review_count, ' +
-			'name, longitude, latitude, zip_code, state_id, stars) VALUES ' +
-			'(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', data
+			'name, longitude, latitude, zip_code, stars) VALUES ' +
+			'(?, ?, ?, ?, ?, ?, ?, ?, ?)', data
 		)
 
 		## restaurants_hours
@@ -176,11 +153,11 @@ def import_yelp_data():
 				' attribute_id, has) VALUES (?,?,?)',
 				(restaurant_id, attribute_id, has))
 
-	### DUMMY PART 2
+	### DUMMY SCORES
 	# restaurants_scores
 	category_ids = get_unique_values(c, 'restaurant_categories', 'id')
 	scores_by_zip_metro = []
-	for zip_code, state_id, metro_id in zip_codes_metro_areas_entries:
+	for zip_code, state_id, metro_id in zip_codes_entries:
 		for category_id in category_ids:
 			# TODO is category_id an integer already?
 			scores_by_zip_metro.append((
@@ -191,8 +168,6 @@ def import_yelp_data():
 		'INSERT INTO restaurants_scores (restaurant_category_id, zip_code, ' +
 		'state_id, metro_id, score) VALUES (?,?,?,?,?)', scores_by_zip_metro
 	)
-
-	### END OF DUMMY PART 2
 
 	conn.commit()
 	c.close()
