@@ -27,30 +27,27 @@ L.mapbox.accessToken = 'pk.eyJ1IjoidGhvbWFzY2hhbiIsImEiOiJjaWd2cXFoa3YwcnJ1dzltN
 
     var temp = JSON.parse({{ information|tojson|safe }});
 
-    console.log(temp);
+    // console.log(temp);
     var alldata = temp;
 
-    var city = cityPoints[alldata['city']];
+    var city = cityPoints[alldata['metro_area']];
 
     var map = L.mapbox.map('map', 'mapbox.streets')
         .setView(city, 11);
 
     var category = alldata['category'];
     // First of all, just choose the restaurants in one zipcode
-    var zipcode = alldata['top3'][0]['zip_code'];
-    var score = alldata['top3'][0]['score'];
     var restaurants = alldata['top3'][0]['restaurants'];
 
     var markers = new L.MarkerClusterGroup();
 
     for (var i = 0; i < restaurants.length; i++) {
-        var a = restaurants[i];
-        var info = a[2];
-        var marker = L.marker(new L.LatLng(a[0], a[1]), {
+        var info = restaurants[i];
+        var marker = L.marker(new L.LatLng(info['latitude'], info['longitude']), {
             icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
-            title: info['R_Name']
+            title: info['name']
         });
-        marker.bindPopup(info['R_Name']);
+        marker.bindPopup(info['name']);
         markers.addLayer(marker);
     }
 

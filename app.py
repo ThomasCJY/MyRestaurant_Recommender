@@ -19,19 +19,19 @@ def get_db():
 
 app = Flask(__name__)
 
-@app.route('/form_action', methods=['POST'])
-def form_action():
-	name = request.form['name']
-	email = request.form['email']
-	msg = request.form['msg']
-	team_members = {'members': ['Jiayu', 'Chiyao', 'Dong', 'Hao', 'Gustav']}
-	json_response = json.dumps(team_members)
-	return render_template('form_action.html', name=name, email=email,
-						   json_response=json_response)
+# @app.route('/form_action', methods=['POST'])
+# def form_action():
+# 	name = request.form['name']
+# 	email = request.form['email']
+# 	msg = request.form['msg']
+# 	team_members = {'members': ['Jiayu', 'Chiyao', 'Dong', 'Hao', 'Gustav']}
+# 	json_response = json.dumps(team_members)
+# 	return render_template('form_action.html', name=name, email=email,
+# 						   json_response=json_response)
 
-@app.route('/wp-admin')
-def wpadmin():
-	return render_template('no.html')
+# @app.route('/wp-admin')
+# def wpadmin():
+# 	return render_template('no.html')
 
 @app.route('/')
 def start_page():
@@ -55,6 +55,15 @@ def metro_areas():
 
 @app.route('/<metro_area>/<category>',methods=['GET', 'POST'])
 def top_zip_codes(metro_area, category):
+	# Get features from POST or URL
+	# name = request.form['name']
+
+	# Get into the Algorithm
+	# Get top 3 zipcode from the algorithm return
+
+	# According to the city, category, zipcode, get all the restaurant information we need
+
+	# TEST
 	try:
 		c = get_db().cursor()
 		try:
@@ -91,15 +100,16 @@ def top_zip_codes(metro_area, category):
 				'category': category,
 				'top3': top3
 			}
-			response = jsonify(result)
-			response.status_code = 200
-			return response
+			information = json.dumps(result)
+
 		finally:
 			c.close()
 	except Exception as e:
 		print e
 		abort(500)
-	return response
+
+	return render_template('mapview.html', information=information)
+
 
 @app.route('/scores/<metro_name>',methods=['GET', 'POST'])
 def top10(metro_name):
