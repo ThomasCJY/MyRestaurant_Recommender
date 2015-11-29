@@ -50,16 +50,6 @@ def get_unique_values(c, table, field):
 	).fetchall()
 	return [x[0] for x in query_res]
 
-def check_add_zip_code(c, zip_code, state_id, metro_id):
-	results = c.execute(
-		'SELECT zip_code from zip_codes WHERE zip_code=? and state_id=? and metro_id=?',
-		[zip_code, state_id, metro_id]
-	).fetchall()
-
-	if len(results) != 1 or len(results[0]) != 1:
-		c.execute('INSERT INTO zip_codes (zip_code, state_id, metro_id) VALUES (?, ?, ?)',
-				  [zip_code, state_id, metro_id])
-
 def get_id_of_name(c, table, name, id_field='id', name_field='name', add_nonexisting=True, **kwargs):
 	return get_unique_val(c, table, [name], [name_field], id_field, add_nonexisting, **kwargs)
 

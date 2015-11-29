@@ -1,6 +1,7 @@
 import sqlite3
 import scripts.parse_yelp_business_data as yelp_business
 import scripts.parse_income_by_zip as income
+import scripts.parse_rent_per_sqft as rent
 import lib.dao as dao
 import lib.constants as const
 
@@ -19,6 +20,9 @@ def parse_datasets():
 
     # Parse income data by zip, synthesize population data
     income.import_income_by_zip()
+
+    # Parse rent price per square feet by zip
+    rent.import_rent_per_sqft_by_zip()
 
 if __name__ == "__main__":
     parse_datasets()

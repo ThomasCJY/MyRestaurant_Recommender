@@ -96,3 +96,10 @@ CREATE TABLE zip_codes_population(
 	zip_code INTEGER NOT NULL PRIMARY KEY REFERENCES zip_codes(zip_code),
 	population INTEGER NOT NULL
 );
+
+CREATE TABLE zip_codes_rent(
+	zip_code INTEGER NOT NULL PRIMARY KEY REFERENCES zip_codes(zip_code),
+	state_id INTEGER NOT NULL REFERENCES states(id),
+	metro_id INTEGER NOT NULL REFERENCES zip_codes(metro_id),
+	rent REAL NOT NULL
+);
