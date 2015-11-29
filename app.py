@@ -53,7 +53,7 @@ def metro_areas():
 		print e
 		abort(500)
 
-@app.route('/scores/top_zip_codes/<metro_area>/<category>')
+@app.route('/<metro_area>/<category>',methods=['GET', 'POST'])
 def top_zip_codes(metro_area, category):
 	try:
 		c = get_db().cursor()
@@ -101,7 +101,7 @@ def top_zip_codes(metro_area, category):
 		abort(500)
 	return response
 
-@app.route('/scores/<metro_name>')
+@app.route('/scores/<metro_name>',methods=['GET', 'POST'])
 def top10(metro_name):
 	# return 'Request for scores in metro %s' % metro_name
 	try:

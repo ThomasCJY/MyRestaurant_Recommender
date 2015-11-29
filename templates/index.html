@@ -1,74 +1,215 @@
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset="utf-8" />
-  <title>Hello world!</title>
-  <link type="text/css" rel="stylesheet"
-        href="{{ url_for('static',
-              filename='hello.css')}}" />
-</head>
-<body>
-<H1>Start page. Hello world!</H1>
+<!DOCTYPE HTML>
+<!--
+	Helios by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
 
-<form action="/form_action" method="POST">
-    <input type="hidden" id="metro" name="metro" value="Charlotte"/>
-    <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name"/>
-    </div>
-    <div>
-        <label for="mail">E-mail:</label>
-        <input type="email" id="email" name="email"/>
-    </div>
-    <div>
-        <label for="msg">Message:</label>
-        <textarea id="msg" name="msg"></textarea>
-    </div>
-    
-    <div class="button">
-        <button type="submit">Send your message</button>
-    </div>
-</form>
+<html>
+<script type="text/javascript">
+    function update_link() {
+        cate = document.getElementById('category').value;
+        if (cate === 'None'){
+          value = document.getElementById('city').value;
+          document.getElementById('myform').action = 'http://localhost:5000/scores/'+value;
+        }
+        else{
+          document.getElementById('myform').action = 'http://localhost:5000/'+value+'/'+cate;
+        }
+    }
+</script>
+	<head>
+		<title>Helios by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css')}}" />
+		<!-- add url as above-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body class="homepage">
+  
+		<div id="page-wrapper">
 
-<pre>
-quu..__
- $$$b  `---.__
-  "$$b        `--.                          ___.---uuudP
-   `$$b           `.__.------.__     __.---'      $$$$"              .
-     "$b          -'            `-.-'            $$$"              .'|
-       ".                                       d$"             _.'  |
-         `.   /                              ..."             .'     |
-           `./                           ..::-'            _.'       |
-            /                         .:::-'            .-'         .'
-           :                          ::''\          _.'            |
-          .' .-.             .-.           `.      .'               |
-          : /'$$|           .@"$\           `.   .'              _.-'
-         .'|$u$$|          |$$,$$|           |  <            _.-'
-         | `:$$:'          :$$$$$:           `.  `.       .-'
-         :                  `"--'             |    `-.     \
-        :##.       ==             .###.       `.      `.    `\
-        |##:                      :###:        |        >     >
-        |#'     `..'`..'          `###'        x:      /     /
-         \                                   xXX|     /    ./
-          \                                xXXX'|    /   ./
-          /`-.                                  `.  /   /
-         :    `-  ...........,                   | /  .'
-         |         ``:::::::'       .            |<    `.
-         |             ```          |           x| \ `.:``.
-         |                         .'    /'   xXX|  `:`M`M':.
-         |    |                    ;    /:' xXXX'|  -'MMMMM:'
-         `.  .'                   :    /:'       |-'MMMM.-'
-          |  |                   .'   /'        .'MMM.-'
-          `'`'                   :  ,'          |MMM<
-            |                     `'            |tbap\
-             \                                  :MM.-'
-              \                 |              .''
-               \.               `.            /
-                /     .:::::::.. :           /
-               |     .:::::::::::`.         /
-               |   .:::------------\       /
-              /   .''               >::'  /
-              `',:                 :    .'
-</pre>
-</body>
+			<!-- Header -->
+				<div id="header">
+
+					<!-- Inner -->
+						<div class="inner">
+							<header>
+								<h1><a href="index.html" id="logo">My Restaurant</a></h1>
+								<hr />
+								<p></p>
+							</header>
+							<footer>
+								<a href="#banner" class="button circled scrolly">Open!</a>
+							</footer>
+						</div>
+
+					<!-- Nav -->
+						
+
+				</div>
+
+			<!-- Banner -->
+				<section id="banner">
+					<header>
+						<h2>Where would you like to open it?</h2>
+						<p><strong>Choose a city below</strong></p>
+					</header>
+				</section>
+
+        <!-- <form name="Item_1" action="http://httpbin.org/post" method='POST' style="text-align:center"> -->
+        <!-- Note -->
+    		<form name="Item_1" id= "myform" action="http://localhost:5000" method='POST' style="text-align:center" >
+            <input type = "hidden" name = "city" id = "city" value = ""> 
+			<!-- Carousel -->
+        <section class="carousel">
+          <div class="reel">
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Pittsburgh'; update_link()"><img src="{{ url_for('static', filename='images/Pitts.jpg')}}" alt="" height="140" width="340"/></a>
+              <header>
+                <h3 onclick="document.getElementById('city').value = 'Pittsburgh'"><a href="#main" class = "scrolly">Pittsburgh</a></h3>
+              </header>
+              <!--p>Note: add any city as the one here and change city names</p>-->
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Karlsruhe'; update_link()"><img src="{{ url_for('static', filename='images/Karls.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Karlsruhe'"><a href="#main" class = "scrolly">Karlsruhe</a></h3>
+              </header>
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Montreal'; update_link()"><img src="{{ url_for('static', filename='images/Montreal.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Montreal'"><a href="#main" class = "scrolly">Montreal</a></h3>
+              </header>
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Charlotte'; update_link()"><img src="{{ url_for('static', filename='images/Charlotte.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Charlotte'"><a href="#main" class = "scrolly">Charlotte</a></h3>
+              </header>
+            </article>
+
+            
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Madison'; update_link()"><img src="{{ url_for('static', filename='images/Karls.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Madison'"><a href="#main" class = "scrolly">Madison</a></h3>
+              </header>
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Waterloo'; update_link()"><img src="{{ url_for('static', filename='images/Karls.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Waterloo'"><a href="#main" class = "scrolly">Waterloo</a></h3>
+              </header>
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Las Vegas'; update_link()"><img src="{{ url_for('static', filename='images/Karls.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Las Vegas'"><a href="#main" class = "scrolly">Las Vegas</a></h3>
+              </header>
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Edinburgh'; update_link()"><img src="{{ url_for('static', filename='images/Karls.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Edinburgh'"><a href="#main" class = "scrolly">Edinburgh</a></h3>
+              </header>
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Phoenix'; update_link()"><img src="{{ url_for('static', filename='images/Karls.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Phoenix'"><a href="#main" class = "scrolly">Phoenix</a></h3>
+              </header>
+            </article>
+
+            <article>
+              <a href="#main" class="image featured scrolly"  onclick="document.getElementById('city').value = 'Urbana-Champaign'; update_link()"><img src="{{ url_for('static', filename='images/Karls.jpg')}}" alt="" height="140" width="340" /></a>
+              <header>
+               <h3 onclick="document.getElementById('city').value = 'Urbana-Champaign'"><a href="#main" class = "scrolly">Urbana-Champaign</a></h3>
+              </header>
+            </article>
+
+
+					</div>
+				</section>
+
+			<!-- Main -->
+				<div class="wrapper style2">
+
+					<article id="main" class="container special">
+					
+						<!--a href="#" class="image featured"><img src="images/pic06.jpg" alt="" /></a-->
+						<header>
+							<h2><a href="#">Would you provide us some other features?</a></h2>
+							<p>
+								The more feature you specify, the better recommendation we can provide.
+							</p>
+
+							<button type="submit">Or see best places for any catogory in the city you chose now!</button>
+						</header>
+            
+						<p style="text-align:center"> What kind of food do you offer?
+						<select name="category" id= "category" onchange="update_link()">
+                    <option value="None">I don't know</option>
+               			<option value="Chinese">Chinese</option>
+                		<option value="Indian">Indian</option>
+               			<option value="Southern">Southern</option>
+              			</select>
+              			<!-- Note: add any question as in this one-->
+            </p>
+            <p style="text-align:center"> Will you provide WIFI?
+              <select name="WiFi">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+						</p>
+            <p style="text-align:center"> Will you deliver?
+              <select name="deviler">
+                <option value="Yes" style="text-align:center">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </p>
+            			Would you run 24 hours?
+              			<select name="runtime">
+                		<option value="Yes">Yes</option>
+                		<option value="No">No</option>
+              			</select>
+           				<button type="submit" >Submit!</button>
+            
+						<!--footer>
+							<a href="#" class="button">submit</a>
+						</footer-->
+					</article>
+
+				</div>
+				</form>
+
+			<!-- Features -->
+				
+
+
+		</div>
+
+		<!-- Scripts -->
+			<!--<script src="assets/js/jquery.min.js"></script>-->
+      <script src="{{ url_for('static', filename='assets/js/jquery.min.js')}}"></script>
+			<script src="{{ url_for('static', filename='assets/js/jquery.dropotron.min.js')}}"></script>
+			<script src="{{ url_for('static', filename='assets/js/jquery.scrolly.min.js')}}"></script>
+			<script src="{{ url_for('static', filename='assets/js/jquery.onvisible.min.js')}}"></script>
+			<script src="{{ url_for('static', filename='assets/js/skel.min.js')}}"></script>
+			<script src="{{ url_for('static', filename='assets/js/util.js')}}"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="{{ url_for('static', filename='assets/js/main.js')}}"></script>
+
+	</body>
 </html>

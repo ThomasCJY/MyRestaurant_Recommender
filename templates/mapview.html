@@ -1,0 +1,60 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Leaflet Markercluster</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+</head>
+<body>
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
+
+<!-- Example data. -->
+<script src="{{ url_for('static', filename='place.js') }}"></script>
+
+<div id='map'></div>
+
+<script>
+
+L.mapbox.accessToken = 'pk.eyJ1IjoidGhvbWFzY2hhbiIsImEiOiJjaWd2cXFoa3YwcnJ1dzltNTZtYzc4cjgwIn0.H8f8OP8-as02lbt8pb92DA';
+
+    var temp = JSON.parse({{ information|tojson|safe }});
+
+    console.log(temp);
+    var alldata = temp;
+
+    var city = cityPoints[alldata['city']];
+
+    var map = L.mapbox.map('map', 'mapbox.streets')
+        .setView(city, 11);
+
+    var category = alldata['category'];
+    // First of all, just choose the restaurants in one zipcode
+    var zipcode = alldata['top3'][0]['zip_code'];
+    var score = alldata['top3'][0]['score'];
+    var restaurants = alldata['top3'][0]['restaurants'];
+
+    var markers = new L.MarkerClusterGroup();
+
+    for (var i = 0; i < restaurants.length; i++) {
+        var a = restaurants[i];
+        var info = a[2];
+        var marker = L.marker(new L.LatLng(a[0], a[1]), {
+            icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
+            title: info['R_Name']
+        });
+        marker.bindPopup(info['R_Name']);
+        markers.addLayer(marker);
+    }
+
+    map.addLayer(markers);
+</script>
+</body>
+</html>
