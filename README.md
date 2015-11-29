@@ -21,7 +21,7 @@ Returns the top ten scores in the given metro area:
 
 `{'scores': [{'category': ..., 'score': ..., 'zip_code': ...}]}`
 
-### `/scores/top_zip_codes/<metro_area>/<category>`
+### `/<metro_area>/<category>`
 
 Returns the top 3 zip codes for the given category within the given metro area.
 Format is subject to some degree of change but can be found in app.py.
