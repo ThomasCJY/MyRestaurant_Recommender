@@ -79,9 +79,9 @@ def top_zip_codes(metro_area, category):
 				print "Metro area \"%s\" not found in DB!" % metro_area
 				abort(500)
 
-			fields = ['zip_code', 'score']
+			fields = ['zip_code']
 			constraints = {'metro_id': metro_id, 'restaurant_category_id': category_id}
-			top3 = [{'zip_code': t[0], 'score': t[1]} for t in
+			top3 = [{'zip_code': t[0]} for t in
 					 dao.get_top_scoring(c, fields=fields, constraints=constraints,
 					 			         count=3)]
 			for t in top3:
