@@ -20,6 +20,7 @@ def get_stars():
            continue
         city_restaurants[row[4]].append(tuple(row[:4]))
     return city_restaurants
+
 def getIncPop():
     conn = sqlite3.connect('flask.db')
     c = conn.cursor()
@@ -32,24 +33,24 @@ def getIncPop():
             continue
         incPop[(row[2],row[3])].append(tuple(row[:2]))
     return incPop
-#def top_scores(stars,income,housing):
+
 def scoreComputing(star,population,incomes,review_count):
     income = sum(map(lambda x:float(x[0])*float(x[1]),incomes))
     star = float(star)
     population = float(population)
     review_count = float(review_count)
-    score = (math.exp((income/100))*star*math.log(population)*math.log(review_count)/17+random.random()*10)*9/10
-    #print score
+    score = math.exp(-(income*math.log(population))+random.random())*review_count+random.random()*10+math.exp(star)
     return score
+
 def topScore(incPop,stars,city):
     new_stars,scores = [],[]
     for zipcode in incPop:
         for zipC in stars[city]:
             if zipcode[0] == zipC[2]:
                 score = scoreComputing(zipC[0],zipcode[0],incPop[zipcode],zipC[-1])
-                scores.append((score,zipcode[0],zipC[1]))
-    top10 = json.dumps(sorted(scores,key = lambda x:x[0],reverse=True)[:10])
+                scores.append((zipC[1],score,zipC[2]))
+    top10 = json.dumps(sorted(scores,key = lambda x:x[1],reverse=True)[:10])
     return top10
+
 if __name__ == '__main__':
-    print topScore(getIncPop(),get_stars(),'Pittsburgh')
-#def top_scores(incomes,stars,)
+    print topScore(getIncPop(),get_stars(),'Las Vegas')
