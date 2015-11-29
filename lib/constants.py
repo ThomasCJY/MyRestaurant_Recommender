@@ -17,3 +17,29 @@ metro_areas_by_state = {
 
 RESTAURANTS_FIELDS = ['id', 'full_address', 'city', 'review_count', 'name',
 					  'longitude', 'latitude', 'zip_code', 'stars']
+
+RESTAURANT_CATEGORIES = [
+	"Nightlife",
+	"Bars",
+	"Sandwiches",
+	"Chinese",
+	"Mexican",
+	"American (New)",
+	"Pizza",
+	"Breakfast & Brunch",
+	"Japanese",
+	"Cafes",
+	"Coffee & Tea",
+	"American (Traditional)",
+	"Fast Food",
+	"Italian",
+	"Burgers",
+	"Seafood",
+	"Sushi Bars",
+	"Vietnamese",
+	"Thai",
+	"Asian Fusion",
+	"Indian",
+	"French",
+	"Korean"
+]

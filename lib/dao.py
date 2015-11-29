@@ -67,8 +67,6 @@ def get_unique_val(c, table, given_vals, given_fields, desired_field, add_nonexi
 
 	if (len(results) != 1 or len(results[0]) != 1):
 		if not add_nonexisting:
-			print ("not add nonexisting for %s of %s %s in table %s" %
-				   (desired_field, given_fields, given_vals, table))
 			return None
 		insert_tables = ', '.join(given_fields + kwargs.keys())
 		given_vals = given_vals + kwargs.values()

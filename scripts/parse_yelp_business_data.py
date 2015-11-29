@@ -15,7 +15,10 @@ def import_yelp_data():
 	f = open(BUSINESS_JSON_FILE)	
 	lines = f.read().split('\n')[:-1]
 	entries = [json.loads(line) for line in lines]
-	restaurants = [entry for entry in entries if 'Restaurants' in entry['categories']]
+	restaurants = [
+		entry for entry in entries if [cat for cat in entry['categories'] 
+									   if cat in const.RESTAURANT_CATEGORIES]
+	]
 	f.close()
 	conn = sqlite3.connect(const.DB_FILENAME)
 	c = conn.cursor()
@@ -26,8 +29,8 @@ def import_yelp_data():
 		c.execute('INSERT INTO weekdays (name) values (?)', [day])
 
 	## restaurant_categories
-	restaurant_categories = ([category for x in restaurants
-							  for category in x['categories']])
+	c.executemany('INSERT INTO restaurant_categories (name) VALUES(?)',
+				  [[x] for x in const.RESTAURANT_CATEGORIES])
 
 	# There's very few restaurants that don't list their zip code, and something around
 	# half are food trucks and thus don't have one set location. We disregard these
@@ -112,10 +115,9 @@ def import_yelp_data():
 
 		for category in [cat for cat in r['categories']
 						 if cat != 'Restaurants']:
-			category_id = get_id_of_name(c, 'restaurant_categories', category)
+			category_id = get_id_of_name(c, 'restaurant_categories', category,
+										 add_nonexisting=False)
 			if category_id is None:
-				print ("ERROR: Couldn't find category %s for restaurant %s" %
-					   (category, restaurant_id))
 				continue
 
 			c.execute(
@@ -141,10 +143,11 @@ def import_yelp_data():
 
 		# restaurant_attributes
 		for attribute in r['attributes']:
-			attribute_id = get_id_of_name(c, 'restaurant_attributes', attribute)
+			attribute_id = get_id_of_name(c, 'restaurant_attributes', attribute,
+										  add_nonexisting=True)
 			if attribute_id is None:
-				print ("ERROR: Failed to insert attribute \"%s\" of " +
-					   "restaurant \"%s\"" % (attribute, restaurant_id))
+				print (("ERROR: Failed to insert attribute \"%s\" of " +
+					   "restaurant \"%s\"") % (attribute, restaurant_id))
 				continue
 			has = 1 if r['attributes'][attribute] else 0
 
@@ -172,8 +175,9 @@ def import_yelp_data():
 	conn.commit()
 	c.close()
 
-def get_id_of_name(c, table, name, id_field='id', name_field='name'):
-	return dao.get_id_of_name(c, table, name, id_field=id_field, name_field=name_field)
+def get_id_of_name(c, table, name, id_field='id', name_field='name', add_nonexisting=True):
+	return dao.get_id_of_name(c, table, name, id_field=id_field, name_field=name_field,
+							  add_nonexisting=add_nonexisting)
 
 def get_unique_values(c, table, field):
 	return dao.get_unique_values(c, table, field)
