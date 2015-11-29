@@ -50,5 +50,6 @@ However, it will be similar to the below format:
         ...
     },
     ...
+  ]
 }
 ```
