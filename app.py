@@ -114,7 +114,16 @@ def top_zip_codes(metro_area, category):
 
 @app.route('/scores/<metro_name>',methods=['GET', 'POST'])
 def top10(metro_name):
-	# return 'Request for scores in metro %s' % metro_name
+	# Note for Dong:
+	# You should add a file named "d3view.html" in template folder. 
+	# In the script, use 'var data = JSON.parse({{ result|tojson|safe }});' and then the JSON
+	# result of this function will be tranferred to your javascript.
+
+	# Uncomment the next two lines and comment all the placeholder part
+	# jresult = top_scores.topScore(metro_name)
+	# return render_template('d3view.html', result=jresult)
+
+	# Placeholder
 	try:
 		c = get_db().cursor()
 		try:
