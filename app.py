@@ -7,6 +7,7 @@ from flask import abort
 
 import json
 import sqlite3
+import top_scores
 
 import lib.constants as const
 import lib.dao as dao

@@ -8,14 +8,31 @@
 <html>
 <script type="text/javascript">
     function update_link() {
-        cate = document.getElementById('category').value;
+        var cate = document.getElementById('category').value;
+        var value = document.getElementById('city').value;
         if (cate === 'None'){
-          value = document.getElementById('city').value;
           document.getElementById('myform').action = 'http://localhost:5000/scores/'+value;
         }
         else{
           document.getElementById('myform').action = 'http://localhost:5000/'+value+'/'+cate;
         }
+    }
+
+    function update_form () {
+      var cate = document.getElementById('category').value;
+      if (cate !== 'None'){
+        var elements = document.getElementsByClassName("hidden_style");
+        for(var i = 0, length = elements.length; i < length; i++) {
+            elements[i].style.display = 'inline';
+        }
+      }
+      else{
+        var elements = document.getElementsByClassName("hidden_style");
+        for(var i = 0, length = elements.length; i < length; i++) {
+            elements[i].style.display = 'none';
+        }
+      }
+
     }
 </script>
 	<head>
@@ -147,43 +164,100 @@
 				<div class="wrapper style2">
 
 					<article id="main" class="container special">
-					
-						<!--a href="#" class="image featured"><img src="images/pic06.jpg" alt="" /></a-->
+				
 						<header>
 							<h2><a href="#">Would you provide us some other features?</a></h2>
 							<p>
 								The more feature you specify, the better recommendation we can provide.
 							</p>
-
-							<button type="submit">Or see best places for any catogory in the city you chose now!</button>
 						</header>
             
 						<p style="text-align:center"> What kind of food do you offer?
-						<select name="category" id= "category" onchange="update_link()">
+						<select name="category" id= "category" onchange="update_link(); update_form()">
                     <option value="None">I don't know</option>
                			<option value="Chinese">Chinese</option>
                 		<option value="Indian">Indian</option>
                			<option value="Southern">Southern</option>
               			</select>
-              			<!-- Note: add any question as in this one-->
             </p>
-            <p style="text-align:center"> Will you provide WIFI?
-              <select name="WiFi">
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+
+            <p style="text-align:center" class = "hidden_style" > What is the atmosphere of your place?
+            <select multiple name="Ambience">
+                    <option value="divey">divey</option>
+                    <option value="classy">classy</option>
+                    <option value="tourisity">tourisity</option>
+                    <option value="hipster">hipster</option>
+                    <option value="trendy">trendy</option>
+                    <option value="intimate">intimate</option>
+                    <option value="casual">casual</option>
+                    <option value="romantic">romantic</option>
+                    <option value="upscale">upscale</option>
+                    </select>
+                    <!-- Note: add any question as in this one-->
+            </p>
+            <p style="text-align:center" class = "hidden_style" > What is your restaurant good for?
+            <select multiple name="Good_for">
+                    <option value="breakfast">breakfast</option> 
+                    <option value="lunch">lunch</option> 
+                    <option value="dinner">dinner</option> 
+                    <option value="brunch">brunch</option> 
+                    <option value="dessert">dessert</option> 
+                    <option value="latenight">latenight</option> 
+                    </select>
+                    <!-- Note: add any question as in this one-->
+            </p>
+            <p style="text-align:center" class = "hidden_style" > What about parking?
+            <select multiple name="Parking">
+                  <option value="lot">lot</option>
+                  <option value="street">street</option>
+                  <option value="garage">garage</option>
+                  <option value="validated">validated</option>
+                    </select>
+                    <!-- Note: add any question as in this one-->
+            </p>
+            <p style="text-align:center" class = "hidden_style"> Will you provide Outdoor Seating?
+              <select name="Outdoor_Seating">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </p>
+            <p style="text-align:center" class = "hidden_style"> Will you provide Waiter Service?
+              <select name="Waiter_Service">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
               </select>
 						</p>
-            <p style="text-align:center"> Will you deliver?
-              <select name="deviler">
-                <option value="Yes" style="text-align:center">Yes</option>
-                <option value="No">No</option>
+            <p style="text-align:center" class = "hidden_style"> Will you Accept Credit Cards?
+              <select name="Accept_Credit_Cards">
+                <option value="1" style="text-align:center">Yes</option>
+                <option value="0">No</option>
               </select>
             </p>
-            			Would you run 24 hours?
-              			<select name="runtime">
-                		<option value="Yes">Yes</option>
-                		<option value="No">No</option>
+            <p style="text-align:center" class = "hidden_style"> Would you accept Take-out?
+              			<select name="Take_out">
+                		<option value="1">Yes</option>
+                		<option value="0">No</option>
               			</select>
+            </p>
+            <p style="text-align:center" class = "hidden_style"> Would you support reservations?
+                    <select name="Reservations">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                    </select>
+            </p>
+            <p style="text-align:center" class = "hidden_style"> Would you support Delivery?
+                    <select name="Delivery">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                    </select>
+            </p>
+            <p style="text-align:center" class = "hidden_style"> What's the price range?($ is the lowest)
+                    <select name="Price_Range">
+                    <option value="1">$</option>
+                    <option value="2">$$</option>
+                    <option value="3">$$$</option>
+                    </select>
+            </p>
            				<button type="submit" >Submit!</button>
             
 						<!--footer>
