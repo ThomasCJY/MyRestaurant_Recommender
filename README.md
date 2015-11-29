@@ -24,8 +24,31 @@ Returns the top ten scores in the given metro area:
 
 `{'scores': [{'category': ..., 'score': ..., 'zip_code': ...}]}`
 
-### `/City_Name/Category/Feature1&Feature2&...`
+### `/scores/top_zip_codes/<metro_area>/<category>`
 
-Return the top 3 areas for the customer's choice.
-
-`{'areas': [{'zip_code': ...}]}`
+Returns the top 3 zip codes for the given category within the given metro area.
+Format is subject to some degree of change but can be found in app.py.
+However, it will be similar to the below format:
+```
+{
+  "category": "Indian", 
+  "metro_area": "Charlotte", 
+  "top3": [
+    {
+      "restaurants": [
+        {
+          "city": "Charlotte", 
+          "full_address": "8432 Old Statesville\nSte 300\nCharlotte, NC 28269", 
+          "id": "XiUxS327vVkwWtR2TgpxLw", 
+          "latitude": 35.33806, 
+          "longitude": -80.8240579, 
+          "name": "Rudino's Pizza & Grinders", 
+          "review_count": 6, 
+          "stars": 2.5, 
+          "zip_code": 28269
+        },
+        ...
+    },
+    ...
+}
+```
