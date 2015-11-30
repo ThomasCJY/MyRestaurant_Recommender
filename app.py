@@ -120,8 +120,8 @@ def top10(metro_name):
 	# result of this function will be tranferred to your javascript.
 
 	# Uncomment the next two lines and comment all the placeholder part
-	# jresult = top_scores.topScore(metro_name)
-	# return render_template('d3view.html', result=jresult)
+	jresult = top_scores.topScore(metro_name)
+	return render_template('d3view.html', result=jresult)
 
 	# Placeholder
 	try:
