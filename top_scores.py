@@ -8,7 +8,7 @@ def scoreComputing(star,population,incomes,review_count):
     star = float(star)
     population = float(population)
     review_count = float(review_count)
-    score = math.exp(-1/income)*math.log(population)+math.exp(star/review_count+random.random())*6
+    score = (math.exp(-1/income)*math.log(1+review_count/population)*math.exp(star))*30
     return score
 
 def topScore(city):
