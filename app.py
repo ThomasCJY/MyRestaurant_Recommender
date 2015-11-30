@@ -124,6 +124,7 @@ def top10(metro_name):
 	return render_template('d3view.html', result=jresult)
 
 	# Placeholder
+	‘’‘
 	try:
 		c = get_db().cursor()
 		try:
@@ -139,6 +140,7 @@ def top10(metro_name):
 	except Exception as e:
 		print e
 		abort(500)
+	’‘’
 
 @app.teardown_appcontext
 def close_connection(exception):
