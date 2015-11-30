@@ -53,7 +53,6 @@ def import_from_txt():
 	entries = [[float(line.split(',')[0]), line.split(',')[1]]
 			   for line in f.read().split('\n')[:-1]]
 	f.close()
-	import pdb; pdb.set_trace()
 	c.executemany('UPDATE restaurants SET stars=? WHERE id=?', entries)
 
 	conn.commit()
