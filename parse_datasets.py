@@ -1,5 +1,6 @@
 import sqlite3
 import scripts.parse_yelp_business_data as yelp_business
+import scripts.parse_yelp_review_data as yelp_review
 import scripts.parse_income_by_zip as income
 import scripts.parse_rent_per_sqft as rent
 import lib.dao as dao
@@ -17,6 +18,9 @@ def parse_datasets():
 
     # Parse Yelp business dataset
     yelp_business.import_yelp_data()
+
+    # Parse Yelp review dataset
+    yelp_review.import_yelp_data()
 
     # Parse income data by zip, synthesize population data
     income.import_income_by_zip()

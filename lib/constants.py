@@ -1,5 +1,7 @@
 DB_FILENAME = "flask.db"
 
+YELP_RESTAURANT_STARS_FILE = "yelp_restaurant_stars.txt"
+
 RESTAURANTS_SCORES_FIELDS = ['restaurant_category_id', 'zip_code',
 							 'metro_id', 'state_id', 'score']
 
