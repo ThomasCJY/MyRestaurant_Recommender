@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1348.17">
+  <style>
+  	.chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+  </style>
+
+</head>
+<body>
+<script><src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+var margin = {top:20, right:150, bottom:100, left:35}
+		var width = 600;
+		var height = 600;
+		var barWidth = 50;
+		var barOffset = 5
+var yScale = d3.scale.linear()
+			.domain([0, 200])
+			.range([0, height/2])
+
+	var xScale = d3.scale.ordinal()
+        .domain(d3.range(0, 5))
+        .rangeBands([0, width/2], 0.2)
+var dataset = JSON.parse({{ result|tojson|safe }});
+d3.json(dataset,function(error,data){
+	var myChart1 = d3.select("body").append("svg")
+			.attr("width", width/2 + margin.left + margin.right)
+			.attr("height", height/2 + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate("+margin.left+","+margin.top+")")
+	var bars = myChart1.selectAll('rect')
+			.data(data)
+			.enter()
+			.append("rect")
+				.style("fill", "Wheat")
+				.attr("width", xScale.rangeBand())
+				.attr('x', function(d,i){return xScale(i)})
+				.attr("height", function(d){return yScale(d.score)})
+				.attr("y", function(d){return height/2-yScale(d.score)})
+	var text1 = myChart1.selectAll("text")
+			.data(data)
+			.enter()
+			.append("text")
+			.text(function(d){return d.category+"-"+d.zip_code})
+			
+			.attr("x", function(d,i){return i*57 + margin.left-4})
+			.attr("y", height/2+20)
+			.attr("font-family", "sans-serif")
+		    .attr("font-size", "11px")
+		    .attr("fill", "black")
+		    .style("text-anchor", "middle")
+	var tex11 = myChart1
+    	   .append('text')
+		   .text("Categories&Zip_codes")
+		   .attr("x", width/2+20)
+		   .attr("y", height/2 +10)
+		   .style("text-anchor", "middle")
+		   .attr("font-weight", "bold")
+		   .attr("font-size", "14px")
+	var tex12 = myChart1
+    	   .append('text')
+		   .text("Scores")
+		   .attr("x", 0)
+		   .attr("y", -5)
+		   .style("text-anchor", "middle")
+		   .attr("font-weight", "bold")
+		   .attr("font-size", "14px")
+	var vAxisScale = d3.scale.linear()
+			.domain([0, 6.148232323])
+			.range([height/2, 0])
+
+	var vAxisScale = d3.scale.linear()
+			.domain([0, 200])
+			.range([height/2, 0])
+
+	var vAxis = d3.svg.axis()
+			.scale(vAxisScale)
+			.orient("left")
+			.ticks(10)
+
+	var vGuide = d3.select("svg").append("g")
+			.attr("transform","translate("+margin.left+","+margin.top+")")
+
+	        .style({ stroke: "#000"})
+			vAxis(vGuide)
+
+	var hAxis = d3.svg.axis()
+			.scale(xScale)
+			.orient("bottom")
+			.tickFormat([])
+
+	var hGuide = d3.select("svg").append("g")
+			hGuide.attr('transform', 'translate(' + margin.left + ', ' + (height/2 + margin.top) + ')')
+	        .style({ fill: 'none', stroke: "#000"})
+		    hGuide.selectAll('line')
+	        .style({ stroke: "#000"})
+	        hAxis(hGuide)
+})
+</body>
+</html>
