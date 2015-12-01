@@ -4,11 +4,13 @@
 <meta charset=utf-8 />
 <title>Leaflet Markercluster</title>
 <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css')}}" />
 <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
 <style>
-  body { margin:0; padding:0; }
-  #map { position:absolute; top:0; bottom:0; width:100%; }
+  body { margin:0; padding:5px; }
+  #map { float:left; top:0; width:80%; padding:5px; height: 800px;}
+  #sidecol {float:left; top:0; width:20%;padding:5px; height: 800px;}
 </style>
 </head>
 <body>
@@ -20,38 +22,61 @@
 <script src="{{ url_for('static', filename='place.js') }}"></script>
 
 <div id='map'></div>
+<div id='sidecol'>
+<button type="submit" onclick = "update_view(1)">Hottest place!</button>
+<button type="submit" onclick = "update_view(2)">2nd Place!</button>
+<button type="submit" onclick = "update_view(3)">3rd Place</button>
+<button type="submit" onclick = "window.location.href='/'">Return</button>
+</div>
 
 <script>
 
-L.mapbox.accessToken = 'pk.eyJ1IjoidGhvbWFzY2hhbiIsImEiOiJjaWd2cXFoa3YwcnJ1dzltNTZtYzc4cjgwIn0.H8f8OP8-as02lbt8pb92DA';
+    L.mapbox.accessToken = 'pk.eyJ1IjoidGhvbWFzY2hhbiIsImEiOiJjaWd2cXFoa3YwcnJ1dzltNTZtYzc4cjgwIn0.H8f8OP8-as02lbt8pb92DA';
 
-    var temp = JSON.parse({{ information|tojson|safe }});
-
-    // console.log(temp);
-    var alldata = temp;
+    markers = 0;
+    var alldata = JSON.parse({{ information|tojson|safe }});
 
     var city = cityPoints[alldata['metro_area']];
 
     var map = L.mapbox.map('map', 'mapbox.streets')
         .setView(city, 11);
 
-    var category = alldata['category'];
-    // First of all, just choose the restaurants in one zipcode
-    var restaurants = alldata['top3'][0]['restaurants'];
+    temp1 = alldata['top3'][0]['restaurants'];
+    
+    temp2 = alldata['top3'][1]['restaurants'];
+    
+    temp3 = alldata['top3'][2]['restaurants'];
 
-    var markers = new L.MarkerClusterGroup();
+    function update_view (argument) {
+        if (markers!==0){
+            map.removeLayer(markers);
+        }
+        if (argument===1) {
+            restaurants = temp1;
+        }
+        else if (argument === 2){
+            restaurants = temp2;
+        }
+        else{
+            restaurants = temp3;
+        }
+        
+        markers = new L.MarkerClusterGroup();
 
-    for (var i = 0; i < restaurants.length; i++) {
-        var info = restaurants[i];
-        var marker = L.marker(new L.LatLng(info['latitude'], info['longitude']), {
-            icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
-            title: info['name']
-        });
-        marker.bindPopup(info['name']);
-        markers.addLayer(marker);
+        for (var i = 0; i < restaurants.length; i++) {
+            var info = restaurants[i];
+            var marker = L.marker(new L.LatLng(info['latitude'], info['longitude']), {
+                icon: L.mapbox.marker.icon({'marker-symbol': 'restaurant', 'marker-color': 'c41200'}),
+                title: info['name']
+            });
+            marker.bindPopup(info['name']);
+            markers.addLayer(marker);
+        }
+
+        map.addLayer(markers);
     }
 
-    map.addLayer(markers);
+
 </script>
 </body>
 </html>
