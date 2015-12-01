@@ -124,23 +124,21 @@ def top10(metro_name):
 	return render_template('d3view.html', result=jresult)
 
 	# Placeholder
-	‘’‘
-	try:
-		c = get_db().cursor()
-		try:
-			result_list = dao.get_top_scores_in_metro(c, metro_name, count=10)
-			if result_list is None:
-				abort(404)
-			result_dict = {'metro_area': metro_name, 'top_scores': result_list}
-			response = jsonify(result_dict)
-			response.status_code = 200
-			return response
-		finally:
-			c.close()
-	except Exception as e:
-		print e
-		abort(500)
-	’‘’
+	# try:
+	# 	c = get_db().cursor()
+	# 	try:
+	# 		result_list = dao.get_top_scores_in_metro(c, metro_name, count=10)
+	# 		if result_list is None:
+	# 			abort(404)
+	# 		result_dict = {'metro_area': metro_name, 'top_scores': result_list}
+	# 		response = jsonify(result_dict)
+	# 		response.status_code = 200
+	# 		return response
+	# 	finally:
+	# 		c.close()
+	# except Exception as e:
+	# 	print e
+	# 	abort(500)
 
 @app.teardown_appcontext
 def close_connection(exception):
