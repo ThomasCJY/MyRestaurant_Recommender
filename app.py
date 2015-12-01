@@ -67,6 +67,31 @@ def top_zip_codes(metro_area, category):
 	# TEST
 	try:
 		c = get_db().cursor()
+		feature_list = [0]*19
+		F = const.FEATURES
+		data = request.form.getlist('Ambience')
+		for t in data:
+			ab = F['Ambience']
+			if t in ab:
+				feature_list[ab.index(t)] = 1 
+		data = request.form.getlist('Good_for')
+		for t in data:
+			gf = F['Good_for']
+			if t in gf:
+				feature_list[gf.index(t)+9] = 1 
+		data = request.form.getlist('Parking')
+		for t in data:
+			pk = F['Parking']
+			if t in pk:
+				feature_list[pk.index(t)+15] = 1 		
+		feature_list.append(int(request.form['Outdoor_Seating']))	
+		feature_list.append(int(request.form['Waiter_Service']))	
+		feature_list.append(int(request.form['Accept_Credit_Cards']))	
+		feature_list.append(int(request.form['Take_out']))	
+		feature_list.append(int(request.form['Reservations']))	
+		feature_list.append(int(request.form['Delivery']))	
+		feature_list.append(int(request.form['Price_Range']))	
+		print feature_list
 		try:
 			category_id = dao.get_id_of_name(c, 'restaurant_categories', category,
 											 add_nonexisting=False)
@@ -80,7 +105,7 @@ def top_zip_codes(metro_area, category):
 				abort(500)
 
 			fields = ['zip_code']
-			constraints = {'metro_id': metro_id, 'restaurant_category_id': category_id}
+			constraints = {'metro_id': metro_id, 'restaurant_category_id': category_id, 'feature': feature_list}
 			top3 = [{'zip_code': t[0]} for t in
 					 dao.get_top_scoring(c, fields=fields, constraints=constraints,
 					 			         count=3)]

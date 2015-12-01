@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import sqlite3
+import algorithm as alg
 import lib.constants as const
 
 def get_top_scores_in_metro(c, metro_area, count=10):
@@ -17,6 +18,9 @@ def get_top_scores_in_metro(c, metro_area, count=10):
 	return results
 
 def get_top_scoring(c, fields=[], constraints={}, count=3):
+	print constraints
+	if 'feature' in constraints:
+		return alg.get_matching_top3(c, constraints, count)	
 	return get_matching(c,
 					    'restaurants_scores',
 					    fields,

@@ -45,3 +45,12 @@ RESTAURANT_CATEGORIES = [
 	"French",
 	"Korean"
 ]
+
+FEATURES = {'Ambience':['divey','classy','tourisity','hipster','trendy','intimate','casual','romantic','upscale'],
+			'Good_for':['breakfast','lunch','dinner','latenight','brunch','dessert'],
+			'Parking':['lot','street','garage','validated'],
+			'Outdoor_Seating':[],
+			'Price_Range':[],
+			'Reservations':[],
+			'Take_out':[],
+			'Waiter_Service':[]}
