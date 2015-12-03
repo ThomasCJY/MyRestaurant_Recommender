@@ -50,7 +50,9 @@ FEATURES = {'Ambience':['divey','classy','tourisity','hipster','trendy','intimat
 			'Good_for':['breakfast','lunch','dinner','latenight','brunch','dessert'],
 			'Parking':['lot','street','garage','validated'],
 			'Outdoor_Seating':[],
+			'Accept_Credit_Cards':[],
 			'Price_Range':[],
 			'Reservations':[],
+			'Delivery':[],
 			'Take_out':[],
 			'Waiter_Service':[]}

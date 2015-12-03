@@ -91,6 +91,7 @@ def top_zip_codes(metro_area, category):
 		feature_list.append(int(request.form['Reservations']))	
 		feature_list.append(int(request.form['Delivery']))	
 		feature_list.append(int(request.form['Price_Range']))	
+		feature_list.append(const.RESTAURANT_CATEGORIES.index(category))
 		print feature_list
 		try:
 			category_id = dao.get_id_of_name(c, 'restaurant_categories', category,

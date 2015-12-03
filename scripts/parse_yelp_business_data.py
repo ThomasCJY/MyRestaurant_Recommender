@@ -143,18 +143,25 @@ def import_yelp_data():
 
 		# restaurant_attributes
 		for attribute in r['attributes']:
-			attribute_id = get_id_of_name(c, 'restaurant_attributes', attribute,
-										  add_nonexisting=True)
-			if attribute_id is None:
-				print (("ERROR: Failed to insert attribute \"%s\" of " +
-					   "restaurant \"%s\"") % (attribute, restaurant_id))
+			if attribute=='Ambience' or attribute=='Good For' or attribute=='Parking':
+				for attr in r['attributes'][attribute]:
+					insert_attributs(c, attr, restaurant_id,r['attributes'][attribute])
+			elif attribute=='Outdoor Seating' or attribute=='Waiter Service' or attribute=='Accepts Credit Cards' or attribute=='Take-out' or attribute=='Takes Reservations' or attribute=='Delivery'or attribute=='Price Range':
+				insert_attributs(c, attribute, restaurant_id, r['attributes'])
+			else:
 				continue
-			has = 1 if r['attributes'][attribute] else 0
+			# attribute_id = get_id_of_name(c, 'restaurant_attributes', attribute,
+			# 							  add_nonexisting=True)
+			# if attribute_id is None:
+			# 	print (("ERROR: Failed to insert attribute \"%s\" of " +
+			# 		   "restaurant \"%s\"") % (attribute, restaurant_id))
+			# 	continue
+			# has = 1 if r['attributes'][attribute] else 0
 
-			# restaurants_attributes
-			c.execute('INSERT INTO restaurants_attributes (restaurant_id, ' +
-				' attribute_id, has) VALUES (?,?,?)',
-				(restaurant_id, attribute_id, has))
+			# # restaurants_attributes
+			# c.execute('INSERT INTO restaurants_attributes (restaurant_id, ' +
+			# 	' attribute_id, has) VALUES (?,?,?)',
+			# 	(restaurant_id, attribute_id, has))
 
 	### DUMMY SCORES
 	# restaurants_scores
@@ -174,6 +181,30 @@ def import_yelp_data():
 
 	conn.commit()
 	c.close()
+
+def insert_attributs(c, attribute, restaurant_id, l):
+	if(attribute == 'valet'):
+		return 
+	attribute_id = get_id_of_name(c, 'restaurant_attributes', attribute,
+								  add_nonexisting=True)
+	if attribute_id is None:
+		print (("ERROR: Failed to insert attribute \"%s\" of " +
+			   "restaurant \"%s\"") % (attribute, restaurant_id))
+		return 
+	if l[attribute] == 'True':
+		has = 1
+	elif l[attribute]=='False':
+		has = 0
+	elif l[attribute]=={}:
+		return
+	else:
+		has = int(l[attribute])
+
+	# restaurants_attributes
+	c.execute('INSERT INTO restaurants_attributes (restaurant_id, ' +
+		' attribute_id, has) VALUES (?,?,?)',
+		(restaurant_id, attribute_id, has))
+	return 
 
 def get_id_of_name(c, table, name, id_field='id', name_field='name', add_nonexisting=True):
 	return dao.get_id_of_name(c, table, name, id_field=id_field, name_field=name_field,
