@@ -1,5 +1,7 @@
 ### Directories of datasets ###
 # Yelp dataset challenge folder dir
+# Page: http://www.yelp.com/dataset_challenge
+# Dataset: http://www.yelp.com/dataset_challenge/dataset
 YELP_DATASET_DIR = '/Users/gustav/datasets/yelp_dataset_challenge_academic_dataset/'
 
 # Location of 13zpallagi.csv, file containing incomes by zip code in the USA
