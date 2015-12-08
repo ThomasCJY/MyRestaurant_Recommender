@@ -1,4 +1,6 @@
-# CSE6242 project
+## Demo
+![](https://media.giphy.com/media/xTk9ZxHDipISA1uG0U/giphy.gif)
+
 ## Data:
 * Yelp dataset ([page](http://www.yelp.com/dataset_challenge))
 * IRS Individual Income Tax Statistics ([page](https://www.irs.gov/uac/SOI-Tax-Stats-Individual-Income-Tax-Statistics-2013-ZIP-Code-Data-(SOI)), [dataset](https://www.irs.gov/pub/irs-soi/13zpallagi.csv))
